@@ -10,7 +10,7 @@ import time
 app = Flask(__name__)
 
 redis = StrictRedis(host='redis')
-token = "xoxp-14830125314-69227002053-69237237125-1348173f9a"
+token = "#TOKEN#"
 this_slack_client = SlackClient(token)
 
 new_user_message = """
