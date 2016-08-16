@@ -1,0 +1,33 @@
+slack_flask:
+  build: .
+  links:
+    - redis
+  ports:
+    - "9000:9000"
+  restart: always
+  command: ["app.py"]
+
+traffic_director:
+  build: .
+  links:
+    - redis
+    - slack_flask
+  ports:
+    - "4444:4444"
+  restart: always
+  command: ["zeromq.py"]
+  volumes:
+    - .:/usr/src/app
+
+redis:
+  image: redis
+  ports:
+    - 6379:6379
+  volumes_from:
+    - redisdata
+
+redisdata:
+  image: redis
+  command: echo 'Data Container for Redis'
+  volumes:
+    - /data
