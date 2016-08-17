@@ -18,8 +18,9 @@ redis = StrictRedis(host='redis')
 q = Queue(connection=redis)
 
 def heartbeat():
-    result = q.enqueue(heartbeat)
-    print(result)
+    q.enqueue(heartbeat)
+    q.enqueue(count_words_at_url, 'http://google.com')
+    requests.get('http://requestb.in/1f5ncty1')
     time.sleep(5)
     return "bump bump"
 

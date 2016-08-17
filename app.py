@@ -20,9 +20,12 @@ def api_live():
 
 @app.route('/jumpstart')
 def jumpstart():
-    result = q.enqueue(count_words_at_url, 'http://nvie.com')
     result = q.enqueue(heartbeat)
     return Response(json.dumps({'message' : "It's alive!"}), 200)
+
+# @app.route('/fetch_jobs')
+# def fetch_jobs():
+#
 
 @app.route('/get_users')
 def get_users():

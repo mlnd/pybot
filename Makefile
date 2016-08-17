@@ -3,5 +3,5 @@ default: build run
 build:
 	docker-compose build
 
-run: 
+run:
 	docker-compose up
