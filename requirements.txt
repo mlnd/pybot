@@ -1,4 +1,5 @@
 Flask
+honcho
 redis
+rq
 slackclient
-pyzmq

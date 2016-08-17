@@ -11,18 +11,21 @@ traffic_director:
   build: .
   links:
     - redis
-    - slack_flask
-  ports:
-    - "4444:4444"
   restart: always
   command: ["zeromq.py"]
   volumes:
     - .:/usr/src/app
 
+rq:
+  build: .
+  links:
+    - redis
+  restart: always
+  entrypoint: ["/env/bin/honcho", "start"]
+
+
 redis:
   image: redis
-  ports:
-    - 6379:6379
   volumes_from:
     - redisdata
 
