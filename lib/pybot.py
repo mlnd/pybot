@@ -21,7 +21,7 @@ def heartbeat():
     result = q.enqueue(heartbeat)
     print(result)
     time.sleep(5)
-    return result
+    return "bump bump"
 
 def count_words_at_url(url):
     resp = requests.get(url)
