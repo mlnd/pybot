@@ -7,23 +7,15 @@ slack_flask:
   restart: always
   command: ["app.py"]
 
-honcho:
+rq:
   build: .
-  environment:
-    - REDIS_PASSWORD="mypass"
   links:
     - redis
-  ports:
-    - "8080:8080"
   restart: always
-  entrypoint: ["honcho", "start"]
+  entrypoint: ["rq", "worker", "-c", "lib.rq-settings"]
 
 redis:
   image: redis
-  environment:
-    - REDIS_PASSWORD="mypass"
-  expose:
-    - "6379"
   volumes_from:
     - redisdata
 
