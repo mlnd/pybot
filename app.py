@@ -1,33 +1,28 @@
 import json
 import os
+import time
+
 from flask import Flask, jsonify, request, redirect, url_for, Response
 from redis import StrictRedis
+from rq import Queue
 from slackclient import SlackClient
-import zmq
-import sys
-import time
+
+from lib.pybot import count_words_at_url, heartbeat
 
 app = Flask(__name__)
 redis = StrictRedis(host='redis')
+q = Queue(connection=redis)
 
 @app.route('/')
 def api_live():
     """ root endpoint; serves to notify that the application is live """
     return Response(json.dumps({'message' : 'Api is live.'}), 200)
 
-@app.route('/pub_test')
-def pub_test():
-    try:
-        _publisher.bind(url)
-        time.sleep(1)
-        _publisher.send_string('hello from flask')
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
-        raise
-    finally: _publisher.unbind(url)
-
-
-    return Response(json.dumps({'message' : 'ZMQ pinged.'}), 200)
+@app.route('/jumpstart')
+def jumpstart():
+    result = q.enqueue(count_words_at_url, 'http://nvie.com')
+    result = q.enqueue(heartbeat)
+    return Response(json.dumps({'message' : "It's alive!"}), 200)
 
 @app.route('/get_users')
 def get_users():
@@ -42,14 +37,6 @@ def read_users():
     user_keys = redis.keys()
     app.logger.info(user_keys)
     return Response(json.dumps({'message' : 'Read users from redis'}), 200)
-
-@app.route('/new_user')
-def new_user():
-
-
-    time.sleep(5)
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=9000, debug=True)

@@ -7,25 +7,23 @@ slack_flask:
   restart: always
   command: ["app.py"]
 
-traffic_director:
+honcho:
   build: .
+  environment:
+    - REDIS_PASSWORD="mypass"
   links:
     - redis
+  ports:
+    - "8080:8080"
   restart: always
-  command: ["zeromq.py"]
-  volumes:
-    - .:/usr/src/app
-
-rq:
-  build: .
-  links:
-    - redis
-  restart: always
-  entrypoint: ["/env/bin/honcho", "start"]
-
+  entrypoint: ["honcho", "start"]
 
 redis:
   image: redis
+  environment:
+    - REDIS_PASSWORD="mypass"
+  expose:
+    - "6379"
   volumes_from:
     - redisdata
 

@@ -1,4 +1,7 @@
+import requests
+import time
 from redis import StrictRedis
+from rq import Queue
 from slackclient import SlackClient
 
 new_user_message = """
@@ -11,7 +14,14 @@ When you are ready check out <#C0EQ8SUF6|supervised-learning>, <#C0EQKMUQN|unsup
 Ask for help with a project here: <#C216N6XSL|p0-introduction>, <#C216N4ATA|p1-boston-housing>, <#C0EQFGYU8|p2-student-interventi>, <#C0M9K8K5M|p3-customer_segments>, <#C21583TEX|p4-train-self-driving>
 """
 
-import requests
+redis = StrictRedis(host='redis')
+q = Queue(connection=redis)
+
+def heartbeat():
+    result = q.enqueue(heartbeat)
+    print(result)
+    time.sleep(5)
+    return result
 
 def count_words_at_url(url):
     resp = requests.get(url)
